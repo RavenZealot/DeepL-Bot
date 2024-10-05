@@ -1,3 +1,2 @@
 /.env
-/deepl-bot.log
-/deepl-bot-backup.log
+/deepl-bot*.log

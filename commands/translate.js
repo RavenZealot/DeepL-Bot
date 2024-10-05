@@ -83,7 +83,7 @@ module.exports = {
                     }
                 ]
             },
-{
+            {
                 name: '添付ファイル',
                 description: 'ファイルを添付してください（テキストファイルのみ）．',
                 type: 11,
@@ -91,7 +91,7 @@ module.exports = {
             },
             {
                 name: '公開',
-                description: '他のユーザに公開するかどうかを選択してください．',
+                description: '他のユーザに公開するかを選択してください．',
                 type: 5,
                 required: false
             }
@@ -127,7 +127,7 @@ module.exports = {
                     logger.logToFileForAttachment(`${attachmentContent.trim()}`);
                 }
                 // 公開設定を取得
-                const isPublic = interaction.options.getBoolean('公開');
+                const isPublic = interaction.options.getBoolean('公開') ?? true;
 
                 // interaction の返信を遅延させる
                 await interaction.deferReply({ ephemeral: !isPublic });
