@@ -9,11 +9,11 @@ AI translate bot for Discord using DeepL API
 ## Required (Only once)
 
 - `.env` (Root directory)
-  - DEEPL_API_KEY : Deepl [API keys](https://www.deepl.com/ja/your-account/keys)
+  - DEEPL_API_KEY : DeepL [API keys](https://www.deepl.com/ja/your-account/keys)
   - BOT_TOKEN : Discord Application [Token](https://discord.com/developers/applications)
   - CHAT_CHANNEL_ID : for [Chat completions](https://platform.openai.com/docs/guides/chat/introduction)
     Multiple designations possible
-  - DEEPL_EMOJI : Emoji for Deepl API
+  - DEEPL_EMOJI : Emoji for DeepL API (e.g. `<:DeepL:1234567890123456789>`)
 - Discord Application Generated URL
 
 ## Run

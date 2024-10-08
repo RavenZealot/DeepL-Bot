@@ -5,8 +5,8 @@ module.exports = {
     },
 
     // 回答メッセージを生成
-    answerMessages(answer, deepLEmoji, target) {
-        return `<:DeepL:${deepLEmoji}> \`${answer.detectedSourceLang} → ${target}\` : ${answer.text.trim()}`;
+    answerMessages(emoji, answer, target) {
+        return `${emoji} \`${answer.detectedSourceLang} → ${target}\` : ${answer.text.trim()}`;
     },
 
     // エラーメッセージを生成

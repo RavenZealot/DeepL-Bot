@@ -144,7 +144,7 @@ module.exports = {
                         }
                         const answer = await DEEPL.translateText(request, null, target);
                         logger.logToFile(`翻訳文 : ${answer.text.trim()}`); // 翻訳文をコンソールに出力
-                        await interaction.editReply(`${messenger.answerMessages(answer, deepLEmoji, target)}\r\n`);
+                        await interaction.editReply(`${messenger.answerMessages(deepLEmoji, answer, target)}\r\n`);
                     } catch (error) {
                         // Discord の文字数制限の場合
                         if (error.message.includes('Invalid Form Body')) {
