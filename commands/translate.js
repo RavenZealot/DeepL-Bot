@@ -110,6 +110,7 @@ module.exports = {
                 // 翻訳先言語を取得
                 const target = interaction.options.getString('翻訳先');
                 logger.logToFile(`依頼文 : ${original.trim()}`); // 依頼文をコンソールに出力
+
                 // 添付ファイルがある場合は内容を取得
                 let attachmentContent = '';
                 if (interaction.options.get('添付ファイル')) {
@@ -126,6 +127,7 @@ module.exports = {
                     }
                     logger.logToFileForAttachment(`${attachmentContent.trim()}`);
                 }
+
                 // 公開設定を取得
                 const isPublic = interaction.options.getBoolean('公開') ?? true;
 
@@ -134,6 +136,7 @@ module.exports = {
 
                 // DeepL に依頼文を送信し翻訳文を取得
                 (async () => {
+                    let usage = [];
                     try {
                         let request = '';
                         // 添付ファイルがある場合は内容を翻訳文に追加
@@ -142,8 +145,12 @@ module.exports = {
                         } else {
                             request = original;
                         }
+
                         const answer = await DEEPL.translateText(request, null, target);
                         logger.logToFile(`翻訳文 : ${answer.text.trim()}`); // 翻訳文をコンソールに出力
+                        // 使用トークン情報を取得
+                        usage = answer.billedCharacters;
+
                         await interaction.editReply(`${messenger.answerMessages(deepLEmoji, answer, target)}\r\n`);
                     } catch (error) {
                         // Discord の文字数制限の場合
@@ -156,6 +163,9 @@ module.exports = {
                             logger.errorToFile(`DeepL API の返信でエラーが発生`, error);
                             await interaction.editReply(`${messenger.errorMessages(`DeepL API の返信でエラーが発生しました`, error.message)}`);
                         }
+                    } finally {
+                        // 使用トークンをロギング
+                        logger.tokenToFile(usage);
                     }
                 })();
             } catch (error) {

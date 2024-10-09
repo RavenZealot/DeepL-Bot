@@ -40,6 +40,7 @@ module.exports = {
         const logFilePath = PATH.resolve(__dirname, `../deepl-bot.log`);
 
         const userInfo = [
+            `\n`,
             `---------- ユーザ情報 ----------`,
             `コマンド : ${interaction.commandName}`,
             `ユーザ名 : ${interaction.user.username}`,
@@ -48,6 +49,20 @@ module.exports = {
         ].join('\n');
 
         FS.appendFileSync(logFilePath, userInfo + '\n');
+    },
+
+    // コマンド実行で使用したトークンをファイルに書き込む
+    tokenToFile: function (usage) {
+        const logFilePath = PATH.resolve(__dirname, `../deepl-bot.log`);
+
+        const tokenInfo = [
+            ``,
+            `--------- トークン情報 ---------`,
+            `総計トークン : ${usage}`,
+            `--------------------------------`
+        ].join('\n');
+
+        FS.appendFileSync(logFilePath, tokenInfo + '\n');
     },
 
     // ログファイルのバックアップと新規作成
