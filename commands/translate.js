@@ -107,7 +107,7 @@ module.exports = {
                 const original = interaction.options.getString('原文');
                 // 翻訳先言語を取得
                 const target = interaction.options.getString('翻訳先');
-                logger.logToFile(`依頼文 : ${original.trim()}`); // 依頼文をコンソールに出力
+                await logger.logToFile(`依頼文 : ${original.trim()}`); // 依頼文をコンソールに出力
 
                 // 添付ファイルがある場合は内容を取得
                 let attachmentContent = '';
@@ -120,10 +120,10 @@ module.exports = {
                             const arrayBuffer = await response.arrayBuffer();
                             attachmentContent = Buffer.from(arrayBuffer).toString();
                         } catch (error) {
-                            logger.errorToFile(`添付ファイルの取得中にエラーが発生`, error);
+                            await logger.errorToFile(`添付ファイルの取得中にエラーが発生`, error);
                         }
                     }
-                    logger.logToFileForAttachment(`${attachmentContent.trim()}`);
+                    await logger.logToFileForAttachment(`${attachmentContent.trim()}`);
                 }
 
                 // 公開設定を取得
@@ -145,7 +145,7 @@ module.exports = {
                         }
 
                         const answer = await DEEPL.translateText(request, null, target);
-                        logger.logToFile(`翻訳文 : ${answer.text.trim()}`); // 翻訳文をコンソールに出力
+                        await logger.logToFile(`翻訳文 : ${answer.text.trim()}`); // 翻訳文をコンソールに出力
                         // 使用トークン情報を取得
                         usage = answer.billedCharacters;
 
@@ -153,21 +153,21 @@ module.exports = {
                     } catch (error) {
                         // Discord の文字数制限の場合
                         if (error.message.includes('Invalid Form Body')) {
-                            logger.errorToFile(`Discord 文字数制限が発生`, error);
+                            await logger.errorToFile(`Discord 文字数制限が発生`, error);
                             await interaction.editReply(`${messenger.errorMessages(`Discord 文字数制限が発生しました`, error.message)}`);
                         }
                         // その他のエラーの場合
                         else {
-                            logger.errorToFile(`DeepL API の返信でエラーが発生`, error);
+                            await logger.errorToFile(`DeepL API の返信でエラーが発生`, error);
                             await interaction.editReply(`${messenger.errorMessages(`DeepL API の返信でエラーが発生しました`, error.message)}`);
                         }
                     } finally {
                         // 使用トークンをロギング
-                        logger.tokenToFile(usage);
+                        await logger.tokenToFile(usage);
                     }
                 })();
             } catch (error) {
-                logger.errorToFile(`原文の取得でエラーが発生`, error);
+                await logger.errorToFile(`原文の取得でエラーが発生`, error);
                 await interaction.editReply(`${messenger.errorMessages(`原文の取得でエラーが発生しました`, error.message)}`);
             }
         }
