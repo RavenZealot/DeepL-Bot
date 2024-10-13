@@ -6,17 +6,17 @@ module.exports = {
     logToFile: async function (message) {
         const now = new Date();
         const timestamp = now.toLocaleString('ja-JP', { timeZone: 'Asia/Tokyo' });
-        const logFilePath = getLogFilePath(`deepl-bot.log`);
+        const logFilePath = getLogFilePath('deepl-bot.log');
 
         const logMessage = `${timestamp} - ${message}`;
 
-        await FS.appendFile(logFilePath, logMessage + '\n');
+        await FS.appendFile(logFilePath, `${logMessage}\n`);
         console.log(logMessage);
     },
 
     // 添付ログをファイルに書き込む
     logToFileForAttachment: async function (attachment) {
-        const logFilePath = getLogFilePath(`deepl-bot.log`);
+        const logFilePath = getLogFilePath('deepl-bot.log');
 
         const logMessage = [
             `========= 添付ファイル =========`,
@@ -24,29 +24,28 @@ module.exports = {
             `================================`
         ].join('\n');
 
-        await FS.appendFile(logFilePath, logMessage + '\n');
+        await FS.appendFile(logFilePath, `${logMessage}\n`);
     },
 
     // エラーログをファイルに書き込む
     errorToFile: async function (message, error) {
         const now = new Date();
         const timestamp = now.toLocaleString('ja-JP', { timeZone: 'Asia/Tokyo' });
-        const logFilePath = getLogFilePath(`deepl-bot.log`);
+        const logFilePath = getLogFilePath('deepl-bot.log');
 
         // ログにはフルスタックを，コンソールにはエラーメッセージのみを出力
         const logMessage = `${timestamp} - ${message} : ${error.stack}`;
         const errorMessage = `${timestamp} - ${message} : ${error.message}`;
 
-        await FS.appendFile(logFilePath, logMessage + '\n');
+        await FS.appendFile(logFilePath, `${logMessage}\n`);
         console.error(errorMessage);
     },
 
     // コマンドを起動したユーザ情報をファイルにのみ書き込む
     commandToFile: async function (interaction) {
-        const logFilePath = getLogFilePath(`deepl-bot.log`);
+        const logFilePath = getLogFilePath('deepl-bot.log');
 
         const userInfo = [
-            `\n`,
             `---------- ユーザ情報 ----------`,
             `コマンド : ${interaction.commandName}`,
             `ユーザ名 : ${interaction.user.username}`,
@@ -54,27 +53,26 @@ module.exports = {
             `--------------------------------`
         ].join('\n');
 
-        await FS.appendFile(logFilePath, userInfo + '\n');
+        await FS.appendFile(logFilePath, `\n\n${userInfo}\n`);
     },
 
     // コマンド実行で使用したトークンをファイルに書き込む
     tokenToFile: async function (usage) {
-        const logFilePath = getLogFilePath(`deepl-bot.log`);
+        const logFilePath = getLogFilePath('deepl-bot.log');
 
         const tokenInfo = [
-            ``,
             `--------- トークン情報 ---------`,
             `総計トークン : ${usage}`,
             `--------------------------------`
         ].join('\n');
 
-        await FS.appendFile(logFilePath, tokenInfo + '\n');
+        await FS.appendFile(logFilePath, `${tokenInfo}\n`);
     },
 
     // ログファイルのバックアップと新規作成
     logRotate: async function () {
-        const logFilePath = getLogFilePath(`deepl-bot.log`);
-        const backupLogFilePath = getLogFilePath(`deepl-bot-backup.log`);
+        const logFilePath = getLogFilePath('deepl-bot.log');
+        const backupLogFilePath = getLogFilePath('deepl-bot-backup.log');
 
         // バックアップファイルが存在する場合は削除
         try {
