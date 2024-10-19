@@ -5,8 +5,8 @@ module.exports = {
     },
 
     // 回答メッセージを生成
-    answerMessages(emoji, answer, target) {
-        return `${emoji} \`${answer.detectedSourceLang} → ${target}\` : ${answer.text.trim()}`;
+    answerMessages(emoji, answer, source, target) {
+        return `${emoji} \`${source} → ${target}\` : ${answer.trim()}`;
     },
 
     // エラーメッセージを生成

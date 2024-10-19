@@ -145,11 +145,12 @@ module.exports = {
                         }
 
                         const answer = await DEEPL.translateText(request, null, target);
-                        await logger.logToFile(`翻訳文 : ${answer.text.trim()}`); // 翻訳文をコンソールに出力
+                        const source = answer.detectedSourceLang;
                         // 使用トークン情報を取得
                         usage = answer.billedCharacters;
 
-                        await interaction.editReply(messenger.answerMessages(deepLEmoji, answer, target));
+                        await logger.logToFile(`翻訳文 : ${answer.text.trim()}`); // 翻訳文をコンソールに出力
+                        await interaction.editReply(messenger.answerMessages(deepLEmoji, answer.text, source, target));
                     } catch (error) {
                         // Discord の文字数制限の場合
                         if (error.message.includes('Invalid Form Body')) {
