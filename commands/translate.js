@@ -1,3 +1,5 @@
+const { MessageFlags } = require('discord.js');
+
 const logger = require('../utils/logger');
 const messenger = require('../utils/messenger');
 
@@ -19,66 +21,43 @@ module.exports = {
                 type: 3,
                 required: true,
                 choices: [
-                    {
-                        name: '日本語',
-                        value: 'JA'
-                    },
-                    {
-                        name: '英語（米国）',
-                        value: 'EN-US'
-                    },
-                    {
-                        name: '英語（英国）',
-                        value: 'EN-GB'
-                    },
-                    {
-                        name: '中国語（簡体字）',
-                        value: 'ZH'
-                    },
-                    {
-                        name: '韓国語',
-                        value: 'KO'
-                    },
-                    {
-                        name: 'インドネシア語',
-                        value: 'ID'
-                    },
-                    {
-                        name: 'ドイツ語',
-                        value: 'DE'
-                    },
-                    {
-                        name: 'フランス語',
-                        value: 'FR'
-                    },
-                    {
-                        name: 'イタリア語',
-                        value: 'IT'
-                    },
-                    {
-                        name: 'スペイン語',
-                        value: 'ES'
-                    },
-                    {
-                        name: 'ポルトガル語',
-                        value: 'PT-PT'
-                    },
-                    {
-                        name: 'ロシア語',
-                        value: 'RU'
-                    },
-                    {
-                        name: 'オランダ語',
-                        value: 'NL'
-                    },
-                    {
-                        name: 'ポーランド語',
-                        value: 'PL'
-                    },
-                    {
-                        name: 'トルコ語',
-                        value: 'TR'
-                    }
+                    { name: '日本語', value: 'JA' },
+                    { name: '英語（米国）', value: 'EN-US' },
+                    { name: '英語（英国）', value: 'EN-GB' },
+                    { name: '中国語（簡体字）', value: 'ZH' },
+                    { name: '韓国語', value: 'KO' },
+                    { name: 'インドネシア語', value: 'ID' },
+                    { name: 'ドイツ語', value: 'DE' },
+                    { name: 'フランス語', value: 'FR' },
+                    { name: 'イタリア語', value: 'IT' },
+                    { name: 'スペイン語', value: 'ES' },
+                    { name: 'ポルトガル語', value: 'PT-PT' },
+                    { name: 'ロシア語', value: 'RU' },
+                    { name: 'オランダ語', value: 'NL' },
+                    { name: 'ポーランド語', value: 'PL' },
+                    { name: 'トルコ語', value: 'TR' }
+                ]
+            },
+            {
+                name: '翻訳元',
+                description: '翻訳元の言語を指定してください（省略すると自動判定されます）．',
+                type: 3,
+                required: false,
+                choices: [
+                    { name: '日本語', value: 'JA' },
+                    { name: '英語', value: 'EN' },
+                    { name: '中国語（簡体字）', value: 'ZH' },
+                    { name: '韓国語', value: 'KO' },
+                    { name: 'インドネシア語', value: 'ID' },
+                    { name: 'ドイツ語', value: 'DE' },
+                    { name: 'フランス語', value: 'FR' },
+                    { name: 'イタリア語', value: 'IT' },
+                    { name: 'スペイン語', value: 'ES' },
+                    { name: 'ポルトガル語', value: 'PT' },
+                    { name: 'ロシア語', value: 'RU' },
+                    { name: 'オランダ語', value: 'NL' },
+                    { name: 'ポーランド語', value: 'PL' },
+                    { name: 'トルコ語', value: 'TR' }
                 ]
             },
             {
@@ -105,6 +84,8 @@ module.exports = {
             try {
                 // 原文を取得
                 const original = interaction.options.getString('原文');
+                // 翻訳元言語を取得
+                const source = interaction.options.getString('翻訳元') || null;
                 // 翻訳先言語を取得
                 const target = interaction.options.getString('翻訳先');
                 await logger.logToFile(`依頼文 : ${original.trim()}`); // 依頼文をコンソールに出力
@@ -130,27 +111,22 @@ module.exports = {
                 const isPublic = interaction.options.getBoolean('公開') ?? true;
 
                 // interaction の返信を遅延させる
-                await interaction.deferReply({ ephemeral: !isPublic });
+                await interaction.deferReply({ flags: isPublic ? MessageFlags.Ephemeral : 0 });
 
                 // DeepL に依頼文を送信し翻訳文を取得
                 (async () => {
                     let usage = [];
-                    try {
-                        let request = '';
                         // 添付ファイルがある場合は内容を翻訳文に追加
-                        if (attachmentContent) {
-                            request = `${original}\n${attachmentContent}`;
-                        } else {
-                            request = original;
-                        }
+                    const request = attachmentContent ? `${original}\n${attachmentContent}` : original;
 
-                        const answer = await DEEPL.translateText(request, null, target);
-                        const source = answer.detectedSourceLang;
+                    try {
+                        const answer = await DEEPL.translateText(request, source, target);
+                        const detectedSourceLang = answer.detectedSourceLang;
                         // 使用トークン情報を取得
                         usage = answer.billedCharacters;
 
                         await logger.logToFile(`翻訳文 : ${answer.text.trim()}`); // 翻訳文をコンソールに出力
-                        await interaction.editReply(messenger.answerMessages(deepLEmoji, answer.text, source, target));
+                        await interaction.editReply(messenger.answerMessages(deepLEmoji, answer.text, detectedSourceLang, target));
                     } catch (error) {
                         // Discord の文字数制限の場合
                         if (error.message.includes('Invalid Form Body')) {
@@ -176,7 +152,7 @@ module.exports = {
         else {
             await interaction.reply({
                 content: messenger.usageMessages(`このチャンネルでは \`${this.data.name}\` コマンドは使えません`),
-                ephemeral: true
+                flags: MessageFlags.Ephemeral
             });
             return;
         }
