@@ -65,12 +65,6 @@ module.exports = {
                 description: 'ファイルを添付してください（テキストファイルのみ）．',
                 type: 11,
                 required: false
-            },
-            {
-                name: '公開',
-                description: '他のユーザに公開するかを選択してください．',
-                type: 5,
-                required: false
             }
         ]
     },
@@ -107,16 +101,13 @@ module.exports = {
                     await logger.logToFileForAttachment(attachmentContent.trim());
                 }
 
-                // 公開設定を取得
-                const isPublic = interaction.options.getBoolean('公開') ?? true;
-
                 // interaction の返信を遅延させる
-                await interaction.deferReply({ flags: isPublic ? 0 : MessageFlags.Ephemeral });
+                await interaction.deferReply();
 
                 // DeepL に依頼文を送信し翻訳文を取得
                 (async () => {
                     let usage = [];
-                        // 添付ファイルがある場合は内容を翻訳文に追加
+                    // 添付ファイルがある場合は内容を翻訳文に追加
                     const request = attachmentContent ? `${original}\n${attachmentContent}` : original;
 
                     try {
