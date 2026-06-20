@@ -76,4 +76,4 @@ async function loadCommands() {
         commands[command.data.name] = command;
         await logger.logToFile(`コマンド \`${command.data.name}\` を読み込みました`);
     }
-};
+}

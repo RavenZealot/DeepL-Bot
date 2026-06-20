@@ -96,4 +96,4 @@ module.exports = {
 
 function getLogFilePath(fileName) {
     return PATH.resolve(__dirname, `../${fileName}`);
-};
+}
