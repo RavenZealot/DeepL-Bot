@@ -105,7 +105,7 @@ module.exports = {
 
                 // DeepL に依頼文を送信し翻訳文を取得
                 (async () => {
-                    let usage = [];
+                    let usage = {};
                     // 添付ファイルがある場合は内容を翻訳文に追加
                     const request = attachmentContent ? `${original}\n${attachmentContent}` : original;
 
