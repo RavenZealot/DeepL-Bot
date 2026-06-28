@@ -98,7 +98,6 @@ module.exports = {
                             await logger.errorToFile('添付ファイルの取得中にエラーが発生', error);
                         }
                     }
-                    await logger.logToFileForAttachment(attachmentContent.trim());
                 }
 
                 // interaction の返信を遅延させる

@@ -14,19 +14,6 @@ module.exports = {
         console.log(logMessage);
     },
 
-    // 添付ログをファイルに書き込む
-    logToFileForAttachment: async function (attachment) {
-        const logFilePath = getLogFilePath('deepl-bot.log');
-
-        const logMessage = [
-            `========= 添付ファイル =========`,
-            `内容 : ${attachment}`,
-            `================================`
-        ].join('\n');
-
-        await FS.appendFile(logFilePath, `${logMessage}\n`);
-    },
-
     // エラーログをファイルに書き込む
     errorToFile: async function (message, error) {
         const now = new Date();
