@@ -28,7 +28,7 @@ const DEEPL = new DeepL.Translator(process.env.DEEPL_API_KEY);
 const commands = {};
 
 // Bot が起動したときの処理
-DISCORD.once('ready', async () => {
+DISCORD.once(Discord.Events.ClientReady, async () => {
     // コマンドを読み込む
     await loadCommands();
 
@@ -43,7 +43,7 @@ DISCORD.once('ready', async () => {
 });
 
 // インタラクションがあったときの処理
-DISCORD.on('interactionCreate', async (interaction) => {
+DISCORD.on(Discord.Events.InteractionCreate, async (interaction) => {
     // コマンド以外のインタラクションは無視
     if (!interaction.isCommand()) return;
 
